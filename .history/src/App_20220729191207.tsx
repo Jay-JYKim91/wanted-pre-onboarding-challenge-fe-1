@@ -7,7 +7,7 @@ function App() {
     <div className="App">
       <header>Todo App</header>
       <Routes>
-        <Route path="/auth" element={<Auth />} />
+        <Route path="/" element={<Auth />} />
       </Routes>
     </div>
   )
