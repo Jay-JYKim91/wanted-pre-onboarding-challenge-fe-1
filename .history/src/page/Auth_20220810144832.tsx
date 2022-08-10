@@ -3,22 +3,22 @@ import { useNavigate } from "react-router-dom"
 import { logIn, signUp } from "../services/authAPI"
 
 type LogInOrSignUp = "logIn" | "signUp"
-interface messageComponentProps {
-  onClick: () => void
-  currentStatus: LogInOrSignUp
-}
 
 export type AuthData = {
   email: string
   password: string
 }
 
-const Message = ({ onClick, currentStatus }: messageComponentProps) => {
+const LoginMessage = () => {
   return (
     <p className="text-right">
-      {currentStatus === "logIn" ? "Need an account? " : "Already a user? "}
-      <button type="button" className="underline uppercase" onClick={onClick}>
-        {currentStatus === "logIn" ? "SIGN UP" : "LOGIN"}
+      Already a user?{" "}
+      <button
+        type="button"
+        className="underline"
+        onClick={() => setLogInOrSignUp("logIn")}
+      >
+        LOGIN
       </button>
     </p>
   )
@@ -54,29 +54,25 @@ function Auth() {
     }
 
     if (logInOrSignUp === "logIn") {
-      logIn(data)
-        .then((result) => {
-          if (result.details === "로그인에 실패했습니다") {
-            window.alert("Invalid email or password.")
-          } else if (result.message === "성공적으로 로그인 했습니다") {
-            window.localStorage.setItem("userToken", result.token)
-            setEmailInput("")
-            setPasswordInput("")
-            navigate("/")
-          }
-        })
-        .catch((error) => alert(error.message))
+      logIn(data).then((result) => {
+        if (result.details === "로그인에 실패했습니다") {
+          window.alert("Invalid email or password.")
+        } else if (result.message === "성공적으로 로그인 했습니다") {
+          window.localStorage.setItem("userToken", result.token)
+          setEmailInput("")
+          setPasswordInput("")
+          navigate("/")
+        }
+      })
     } else if (logInOrSignUp === "signUp") {
-      signUp(data)
-        .then((result) => {
-          if (result.details === "이미 존재하는 유저입니다") {
-            window.alert("This email address is already registered.")
-          } else if (result.message === "계정이 성공적으로 생성되었습니다") {
-            window.alert("Thanks for signing up. You can login now.")
-            setLogInOrSignUp("logIn")
-          }
-        })
-        .catch((error) => alert(error.message))
+      signUp(data).then((result) => {
+        if (result.details === "이미 존재하는 유저입니다") {
+          window.alert("This email address is already registered.")
+        } else if (result.message === "계정이 성공적으로 생성되었습니다") {
+          window.alert("Thanks for signing up. You can login now.")
+          setLogInOrSignUp("logIn")
+        }
+      })
     }
   }
 
@@ -115,12 +111,29 @@ function Auth() {
             {logInOrSignUp}
           </button>
         </form>
-        <Message
-          onClick={() =>
-            setLogInOrSignUp(logInOrSignUp === "logIn" ? "signUp" : "logIn")
-          }
-          currentStatus={logInOrSignUp}
-        />
+        {logInOrSignUp === "logIn" ? (
+          <p className="text-right">
+            Need an account?{" "}
+            <button
+              type="button"
+              className="underline"
+              onClick={() => setLogInOrSignUp("signUp")}
+            >
+              SIGN UP
+            </button>
+          </p>
+        ) : (
+          <p className="text-right">
+            Already a user?{" "}
+            <button
+              type="button"
+              className="underline"
+              onClick={() => setLogInOrSignUp("logIn")}
+            >
+              LOGIN
+            </button>
+          </p>
+        )}
       </div>
     </div>
   )

@@ -67,16 +67,14 @@ function Auth() {
         })
         .catch((error) => alert(error.message))
     } else if (logInOrSignUp === "signUp") {
-      signUp(data)
-        .then((result) => {
-          if (result.details === "이미 존재하는 유저입니다") {
-            window.alert("This email address is already registered.")
-          } else if (result.message === "계정이 성공적으로 생성되었습니다") {
-            window.alert("Thanks for signing up. You can login now.")
-            setLogInOrSignUp("logIn")
-          }
-        })
-        .catch((error) => alert(error.message))
+      signUp(data).then((result) => {
+        if (result.details === "이미 존재하는 유저입니다") {
+          window.alert("This email address is already registered.")
+        } else if (result.message === "계정이 성공적으로 생성되었습니다") {
+          window.alert("Thanks for signing up. You can login now.")
+          setLogInOrSignUp("logIn")
+        }
+      })
     }
   }
 

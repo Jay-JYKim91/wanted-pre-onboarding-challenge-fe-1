@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react"
-import { MdPlaylistAdd } from "react-icons/md"
+import { MdPlaylistAdd, MdLibraryAdd, MdOutlineEditOff } from "react-icons/md"
 import { useNavigate, useParams } from "react-router-dom"
 import ActiveTodo from "../component/ActiveTodo"
-import AddForm from "../component/AddForm"
-import { getTodoById } from "../services/todoAPI"
+import {
+  getTodoById,
+  createTodo,
+  deleteTodo,
+  getTodos,
+} from "../services/todoAPI"
 
 type Props = {
   todos: TodoProps[]
@@ -24,6 +28,10 @@ function Main({ todos, setTodos }: Props) {
   const navigate = useNavigate()
   const { id } = useParams()
   const userToken = window.localStorage.getItem("userToken")
+  const [titleInput, setTitleInput] = useState("")
+  const [contentInput, setContentInput] = useState("")
+  // const [editedTitleInput, setEditedTitleInput] = useState("")
+  // const [editedContentInput, setEditedContentInput] = useState("")
   const [activeTodoId, setActiveTodoId] = useState("")
   const [activeTodo, setActiveTodo] = useState<TodoProps>()
   const liStyleDefault =
@@ -79,18 +87,64 @@ function Main({ todos, setTodos }: Props) {
   }, [id])
 
   useEffect(() => {
+    console.log(activeTodoId)
     if (activeTodoId !== "") {
-      window.localStorage.setItem("activeTodoId", activeTodoId)
-      getTodoById(activeTodoId, userToken!)
-        .then((result) => {
-          setActiveTodo(result.data)
-        })
-        .catch((error) => alert(error.message))
+      getTodoById(activeTodoId, userToken!).then((result) => {
+        console.log(result.data)
+        setActiveTodo(result.data)
+        console.log(activeTodo)
+        // setEditedTitleInput(result.data.title)
+        // setEditedContentInput(result.data.content)
+        window.localStorage.setItem("activeTodoId", activeTodoId)
+      })
     }
     if (document.getElementById("originalTitle")) {
       handleTodoEditForm("close")
     }
   }, [activeTodoId, userToken])
+
+  useEffect(() => {
+    navigate("/")
+  }, [todos, navigate])
+
+  function handleAddTodo(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    const userToken = window.localStorage.getItem("userToken")
+    const data = {
+      title: titleInput,
+      content: contentInput,
+    }
+
+    createTodo(data, userToken!).then((result) => {
+      if (result.data) {
+        setTitleInput("")
+        setContentInput("")
+        handleDisplayTodoAddForm("close")
+        getTodos(userToken!).then((result) => {
+          setTodos(result.data)
+        })
+      }
+    })
+  }
+
+  function handleDeleteTodo(id: string) {
+    const confirm = window.confirm(
+      "Are you sure you want to permanently delete this todo?"
+    )
+
+    if (confirm) {
+      deleteTodo(id, userToken!).then((result) => {
+        if (result.data === null) {
+          getTodos(userToken!).then((res) => {
+            setTodos(res.data)
+          })
+          setActiveTodoId("")
+          setActiveTodo(undefined)
+        }
+      })
+    }
+  }
 
   return (
     <div className="max-w-xs md:max-w-lg mx-auto my-8">
@@ -106,11 +160,51 @@ function Main({ todos, setTodos }: Props) {
         </button>
       </div>
 
-      <AddForm
-        handleDisplayTodoAddForm={handleDisplayTodoAddForm}
-        setTodos={setTodos}
-      />
-
+      <form
+        className="my-4 hidden"
+        id="addTodoForm"
+        onSubmit={(event) => handleAddTodo(event)}
+      >
+        <h1 className="text-xl text-center">Add a todo</h1>
+        <div className="flex justify-end text-xl">
+          <button
+            type="submit"
+            className="p-1 my-4 mr-1 rounded bg-primary-900 text-white shadow-lg"
+            onClick={() => handleDisplayTodoAddForm("close")}
+          >
+            <MdOutlineEditOff />
+          </button>
+          <button
+            type="submit"
+            className="p-1 my-4 rounded bg-primary-900 text-white shadow-lg"
+          >
+            <MdLibraryAdd />
+          </button>
+        </div>
+        <div className="flex flex-col mb-2">
+          <label htmlFor="titleInput">Title</label>
+          <input
+            type="text"
+            id="titleInput"
+            value={titleInput}
+            required
+            onChange={(event) => setTitleInput(event.target.value)}
+            className="border rounded px-1"
+          />
+        </div>
+        <div className="flex flex-col mb-2">
+          <label htmlFor="contentInput">Content</label>
+          <textarea
+            name="contentInput"
+            id="contentInput"
+            cols={30}
+            rows={3}
+            value={contentInput}
+            onChange={(event) => setContentInput(event.target.value)}
+            className="border rounded px-1"
+          ></textarea>
+        </div>
+      </form>
       <div className="pt-16 flex flex-col md:flex-row">
         <ul className="basis-1/3 p-2 max-h-[200px] overflow-scroll">
           {todos.map((todo: TodoProps) => {
@@ -131,16 +225,17 @@ function Main({ todos, setTodos }: Props) {
           })}
         </ul>
         <div className="basis-2/3 p-2">
-          {activeTodo && (
-            <ActiveTodo
-              activeTodo={activeTodo}
-              handleTodoEditForm={handleTodoEditForm}
-              setActiveTodo={setActiveTodo}
-              setTodos={setTodos}
-              activeTodoId={activeTodoId}
-              setActiveTodoId={setActiveTodoId}
-            />
-          )}
+          {
+            activeTodo && activeTodo.title
+            // <ActiveTodo
+            //   activeTodo={activeTodo}
+            //   handleTodoEditForm={handleTodoEditForm}
+            //   handleDeleteTodo={handleDeleteTodo}
+            //   setActiveTodo={setActiveTodo}
+            //   setTodos={setTodos}
+            //   activeTodoId={activeTodoId}
+            // />
+          }
         </div>
       </div>
     </div>

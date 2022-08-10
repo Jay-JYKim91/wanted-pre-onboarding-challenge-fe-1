@@ -53,8 +53,8 @@ function Main({ todos, setTodos }: Props) {
     const editButtons = document.getElementById("editButtons")
 
     if (displayForm === "open") {
-      originalTitle!.style.display = "none"
-      originalContent!.style.display = "none"
+      originalTitle && originalTitle.style.display = "none"
+      originalContent && originalContent.style.display = "none"
       originalButtons!.style.display = "none"
       editedTitleInput!.style.display = "flex"
       editedContentInput!.style.display = "flex"

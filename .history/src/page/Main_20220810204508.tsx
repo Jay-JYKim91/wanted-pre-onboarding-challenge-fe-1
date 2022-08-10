@@ -24,6 +24,8 @@ function Main({ todos, setTodos }: Props) {
   const navigate = useNavigate()
   const { id } = useParams()
   const userToken = window.localStorage.getItem("userToken")
+  // const [titleInput, setTitleInput] = useState("")
+  // const [contentInput, setContentInput] = useState("")
   const [activeTodoId, setActiveTodoId] = useState("")
   const [activeTodo, setActiveTodo] = useState<TodoProps>()
   const liStyleDefault =
@@ -81,11 +83,9 @@ function Main({ todos, setTodos }: Props) {
   useEffect(() => {
     if (activeTodoId !== "") {
       window.localStorage.setItem("activeTodoId", activeTodoId)
-      getTodoById(activeTodoId, userToken!)
-        .then((result) => {
-          setActiveTodo(result.data)
-        })
-        .catch((error) => alert(error.message))
+      getTodoById(activeTodoId, userToken!).then((result) => {
+        setActiveTodo(result.data)
+      })
     }
     if (document.getElementById("originalTitle")) {
       handleTodoEditForm("close")

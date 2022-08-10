@@ -24,6 +24,8 @@ function Main({ todos, setTodos }: Props) {
   const navigate = useNavigate()
   const { id } = useParams()
   const userToken = window.localStorage.getItem("userToken")
+  // const [titleInput, setTitleInput] = useState("")
+  // const [contentInput, setContentInput] = useState("")
   const [activeTodoId, setActiveTodoId] = useState("")
   const [activeTodo, setActiveTodo] = useState<TodoProps>()
   const liStyleDefault =
@@ -81,16 +83,35 @@ function Main({ todos, setTodos }: Props) {
   useEffect(() => {
     if (activeTodoId !== "") {
       window.localStorage.setItem("activeTodoId", activeTodoId)
-      getTodoById(activeTodoId, userToken!)
-        .then((result) => {
-          setActiveTodo(result.data)
-        })
-        .catch((error) => alert(error.message))
+      getTodoById(activeTodoId, userToken!).then((result) => {
+        setActiveTodo(result.data)
+      })
     }
     if (document.getElementById("originalTitle")) {
       handleTodoEditForm("close")
     }
   }, [activeTodoId, userToken])
+
+  // function handleAddTodo(event: React.FormEvent<HTMLFormElement>) {
+  //   event.preventDefault()
+
+  //   const userToken = window.localStorage.getItem("userToken")
+  //   const data = {
+  //     title: titleInput,
+  //     content: contentInput,
+  //   }
+
+  //   createTodo(data, userToken!).then((result) => {
+  //     if (result.data) {
+  //       setTitleInput("")
+  //       setContentInput("")
+  //       handleDisplayTodoAddForm("close")
+  //       getTodos(userToken!).then((result) => {
+  //         setTodos(result.data)
+  //       })
+  //     }
+  //   })
+  // }
 
   return (
     <div className="max-w-xs md:max-w-lg mx-auto my-8">
@@ -106,10 +127,7 @@ function Main({ todos, setTodos }: Props) {
         </button>
       </div>
 
-      <AddForm
-        handleDisplayTodoAddForm={handleDisplayTodoAddForm}
-        setTodos={setTodos}
-      />
+      <AddForm />
 
       <div className="pt-16 flex flex-col md:flex-row">
         <ul className="basis-1/3 p-2 max-h-[200px] overflow-scroll">
