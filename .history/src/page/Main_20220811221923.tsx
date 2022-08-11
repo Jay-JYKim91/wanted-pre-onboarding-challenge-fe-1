@@ -6,13 +6,13 @@ import AddForm, { TodoData } from "../component/AddForm"
 import { getTodoById } from "../services/todoAPI"
 
 type Props = {
-  todos: AllTodoData[]
+  todos: AllTodoProps[]
   setTodos: React.Dispatch<React.SetStateAction<never[]>>
 }
 
 export type DisplayForm = "open" | "close"
 
-export interface AllTodoData extends TodoData {
+export interface AllTodoProps extends TodoData {
   id: string
   createdAt: string
   updatedAt: string
@@ -23,7 +23,7 @@ function Main({ todos, setTodos }: Props) {
   const { id } = useParams()
   const userToken = window.localStorage.getItem("userToken")
   const [activeTodoId, setActiveTodoId] = useState("")
-  const [activeTodo, setActiveTodo] = useState<AllTodoData>()
+  const [activeTodo, setActiveTodo] = useState<AllTodoProps>()
   const liStyleDefault =
     "rounded mb-1 p-1 text-white cursor-pointer bg-primary-500 text-ellipsis"
   const liStyleActive =
@@ -111,7 +111,7 @@ function Main({ todos, setTodos }: Props) {
 
       <div className="pt-16 flex flex-col md:flex-row">
         <ul className="basis-1/3 p-2 max-h-[200px] overflow-scroll">
-          {todos.map((todo: AllTodoData) => {
+          {todos.map((todo: AllTodoProps) => {
             return (
               <li
                 onClick={() => {

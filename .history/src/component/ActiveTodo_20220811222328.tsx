@@ -15,7 +15,7 @@ import {
 import { TodoData } from "./AddForm"
 
 type Props = {
-  activeTodo: AllTodoData
+  activeTodo: AllTodoProps
   activeTodoId: string
   setActiveTodoId: React.Dispatch<React.SetStateAction<string>>
   handleTodoEditForm: (displayForm: DisplayForm) => void

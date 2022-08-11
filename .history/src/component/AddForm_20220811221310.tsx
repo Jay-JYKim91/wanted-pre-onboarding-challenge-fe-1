@@ -8,7 +8,7 @@ type Props = {
   setTodos: React.Dispatch<React.SetStateAction<never[]>>
 }
 
-export interface TodoData {
+export type TodoData = {
   title: string
   content: string
 }

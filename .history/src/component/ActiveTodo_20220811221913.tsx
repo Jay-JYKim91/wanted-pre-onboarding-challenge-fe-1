@@ -5,7 +5,7 @@ import {
   MdOutlineEditOff,
   MdPlaylistAddCheck,
 } from "react-icons/md"
-import { AllTodoData, DisplayForm } from "../page/Main"
+import { AllTodoProps, DisplayForm } from "../page/Main"
 import {
   getTodos,
   updateTodo,
@@ -15,11 +15,11 @@ import {
 import { TodoData } from "./AddForm"
 
 type Props = {
-  activeTodo: AllTodoData
+  activeTodo: TodoProps
   activeTodoId: string
   setActiveTodoId: React.Dispatch<React.SetStateAction<string>>
   handleTodoEditForm: (displayForm: DisplayForm) => void
-  setActiveTodo: React.Dispatch<React.SetStateAction<AllTodoData | undefined>>
+  setActiveTodo: React.Dispatch<React.SetStateAction<AllTodoProps | undefined>>
   setTodos: React.Dispatch<React.SetStateAction<never[]>>
 }
 
