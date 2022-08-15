@@ -1,7 +1,7 @@
 import { AxiosError } from "axios"
 import React, { useEffect, useState } from "react"
 import { MdPlaylistAdd } from "react-icons/md"
-import { useMutation, useQuery } from "react-query"
+import { useQuery } from "react-query"
 import { useNavigate, useParams } from "react-router-dom"
 import ActiveTodo from "../component/ActiveTodo"
 import AddForm, { TodoData } from "../component/AddForm"
@@ -78,12 +78,14 @@ function Main({ todos, setTodos }: Props) {
     }
   }, [id])
 
-  const getTodoByIdReq = useMutation(
+  const getTodoByIdReq = useQuery(
     "getTodoById",
     () => getTodoById(activeTodoId, userToken!),
     {
       onSuccess: (result) => {
+        console.log(result.data.data)
         setActiveTodo(result.data.data)
+        // setTodos(result.data.data)
       },
       onError: (error: AxiosError) => {
         console.error(error.message)
@@ -94,7 +96,12 @@ function Main({ todos, setTodos }: Props) {
   useEffect(() => {
     if (activeTodoId !== "") {
       window.localStorage.setItem("activeTodoId", activeTodoId)
-      getTodoByIdReq.mutate()
+      getTodoByIdReq.refetch()
+      // getTodoById(activeTodoId, userToken!)
+      //   .then((result) => {
+      //     setActiveTodo(result.data)
+      //   })
+      //   .catch((error) => alert(error.message))
     }
     if (document.getElementById("originalTitle")) {
       handleTodoEditForm("close")

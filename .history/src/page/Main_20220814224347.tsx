@@ -78,18 +78,16 @@ function Main({ todos, setTodos }: Props) {
     }
   }, [id])
 
-  const getTodoByIdReq = useMutation(
-    "getTodoById",
-    () => getTodoById(activeTodoId, userToken!),
-    {
+  function getTodoByIdReq() {
+    useMutation("getTodoById", () => getTodoById(activeTodoId, userToken!), {
       onSuccess: (result) => {
         setActiveTodo(result.data.data)
       },
       onError: (error: AxiosError) => {
         console.error(error.message)
       },
-    }
-  )
+    })
+  }
 
   useEffect(() => {
     if (activeTodoId !== "") {

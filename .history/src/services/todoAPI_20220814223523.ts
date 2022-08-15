@@ -19,6 +19,13 @@ export async function getTodoById(id: string, userToken: string) {
   })
 
   return response;
+
+  // const response = await fetch(`http://localhost:8080/todos/${id}`, {
+  //   method: "GET",
+  //   headers: { Authorization: userToken },
+  // })
+  // const result = await response.json();
+  // return result;
 }
 
 export async function createTodo(data: TodoData, userToken: string) {
@@ -40,6 +47,15 @@ export async function deleteTodo(id: string, userToken: string) {
     })
 
   return response;
+
+  // const response = await fetch(`http://localhost:8080/todos/${id}`, {
+  //   method: "DELETE",
+  //   headers: {
+  //     Authorization: userToken!,
+  //   },
+  // })
+  // const result = await response.json();
+  // return result;
 }
 
 export async function updateTodo(id: string, userToken: string,  data: {title: string, content: string}) {

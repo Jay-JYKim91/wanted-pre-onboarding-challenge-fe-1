@@ -54,6 +54,12 @@ function ActiveTodo({
   useEffect(() => {
     if (activeTodoId !== "") {
       getTodoByIdReq.mutate()
+      getTodoById(activeTodoId, userToken!)
+        .then((result) => {
+          setEditedTitleInput(result.data.title)
+          setEditedContentInput(result.data.content)
+        })
+        .catch((error) => alert(error.message))
     }
   }, [activeTodoId, userToken])
 

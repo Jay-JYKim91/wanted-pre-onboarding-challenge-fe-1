@@ -1,4 +1,3 @@
-import { AxiosError } from "axios"
 import React, { useEffect, useState } from "react"
 import { useMutation } from "react-query"
 import { useNavigate } from "react-router-dom"
@@ -34,31 +33,15 @@ function Auth() {
 
   const logInReq = useMutation(logIn, {
     onSuccess: (data) => {
-      if (data.details === "로그인에 실패했습니다") {
+      console.log(data)
+      if (result.details === "로그인에 실패했습니다") {
         window.alert("Invalid email or password.")
-      } else if (data.message === "성공적으로 로그인 했습니다") {
-        window.localStorage.setItem("userToken", data.token)
+      } else if (result.message === "성공적으로 로그인 했습니다") {
+        window.localStorage.setItem("userToken", result.token)
         setEmailInput("")
         setPasswordInput("")
         navigate("/")
       }
-    },
-    onError: (error: AxiosError) => {
-      console.error(error.message)
-    },
-  })
-
-  const signUpReq = useMutation(signUp, {
-    onSuccess: (data) => {
-      if (data.details === "이미 존재하는 유저입니다") {
-        window.alert("This email address is already registered.")
-      } else if (data.message === "계정이 성공적으로 생성되었습니다") {
-        window.alert("Thanks for signing up. You can login now.")
-        setLogInOrSignUp("logIn")
-      }
-    },
-    onError: (error: AxiosError) => {
-      console.error(error.message)
     },
   })
 
@@ -87,8 +70,32 @@ function Auth() {
 
     if (logInOrSignUp === "logIn") {
       logInReq.mutate(data)
+      // LogIn(data)
+      // const res = LogIn(data)
+      // console.log(res)
+      // logIn(data)
+      //   .then((result) => {
+      //     if (result.details === "로그인에 실패했습니다") {
+      //       window.alert("Invalid email or password.")
+      //     } else if (result.message === "성공적으로 로그인 했습니다") {
+      //       window.localStorage.setItem("userToken", result.token)
+      //       setEmailInput("")
+      //       setPasswordInput("")
+      //       navigate("/")
+      //     }
+      //   })
+      //   .catch((error) => alert(error.message))
     } else if (logInOrSignUp === "signUp") {
-      signUpReq.mutate(data)
+      signUp(data)
+        .then((result) => {
+          if (result.details === "이미 존재하는 유저입니다") {
+            window.alert("This email address is already registered.")
+          } else if (result.message === "계정이 성공적으로 생성되었습니다") {
+            window.alert("Thanks for signing up. You can login now.")
+            setLogInOrSignUp("logIn")
+          }
+        })
+        .catch((error) => alert(error.message))
     }
   }
 

@@ -29,6 +29,7 @@ function AddForm({ handleDisplayTodoAddForm, setTodos }: Props) {
         handleDisplayTodoAddForm("close")
         getTodos(userToken!)
           .then((result) => {
+            // console.log(result.data.data)
             setTodos(result.data.data)
           })
           .catch((error) => alert(error.message))

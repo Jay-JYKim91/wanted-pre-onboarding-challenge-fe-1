@@ -95,6 +95,11 @@ function Main({ todos, setTodos }: Props) {
     if (activeTodoId !== "") {
       window.localStorage.setItem("activeTodoId", activeTodoId)
       getTodoByIdReq.mutate()
+      // getTodoById(activeTodoId, userToken!)
+      //   .then((result) => {
+      //     setActiveTodo(result.data)
+      //   })
+      //   .catch((error) => alert(error.message))
     }
     if (document.getElementById("originalTitle")) {
       handleTodoEditForm("close")

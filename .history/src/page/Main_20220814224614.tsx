@@ -94,6 +94,7 @@ function Main({ todos, setTodos }: Props) {
   useEffect(() => {
     if (activeTodoId !== "") {
       window.localStorage.setItem("activeTodoId", activeTodoId)
+      console.log(activeTodoId)
       getTodoByIdReq.mutate()
     }
     if (document.getElementById("originalTitle")) {

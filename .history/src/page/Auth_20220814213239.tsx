@@ -44,21 +44,7 @@ function Auth() {
       }
     },
     onError: (error: AxiosError) => {
-      console.error(error.message)
-    },
-  })
-
-  const signUpReq = useMutation(signUp, {
-    onSuccess: (data) => {
-      if (data.details === "이미 존재하는 유저입니다") {
-        window.alert("This email address is already registered.")
-      } else if (data.message === "계정이 성공적으로 생성되었습니다") {
-        window.alert("Thanks for signing up. You can login now.")
-        setLogInOrSignUp("logIn")
-      }
-    },
-    onError: (error: AxiosError) => {
-      console.error(error.message)
+      window.alert(error.message)
     },
   })
 
@@ -88,7 +74,16 @@ function Auth() {
     if (logInOrSignUp === "logIn") {
       logInReq.mutate(data)
     } else if (logInOrSignUp === "signUp") {
-      signUpReq.mutate(data)
+      signUp(data)
+        .then((result) => {
+          if (result.details === "이미 존재하는 유저입니다") {
+            window.alert("This email address is already registered.")
+          } else if (result.message === "계정이 성공적으로 생성되었습니다") {
+            window.alert("Thanks for signing up. You can login now.")
+            setLogInOrSignUp("logIn")
+          }
+        })
+        .catch((error) => alert(error.message))
     }
   }
 

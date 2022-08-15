@@ -20,24 +20,21 @@ function AddForm({ handleDisplayTodoAddForm, setTodos }: Props) {
   const [contentInput, setContentInput] = useState("")
   const userToken = window.localStorage.getItem("userToken")
 
-  const createTodoReq = useMutation(
-    (data: TodoData) => createTodo(data, userToken!),
-    {
-      onSuccess: () => {
-        setTitleInput("")
-        setContentInput("")
-        handleDisplayTodoAddForm("close")
-        getTodos(userToken!)
-          .then((result) => {
-            setTodos(result.data.data)
-          })
-          .catch((error) => alert(error.message))
-      },
-      onError: (error: AxiosError) => {
-        window.alert(error.message)
-      },
-    }
-  )
+  const createTodoReq = useMutation(createTodo, {
+    onSuccess: (data) => {
+      setTitleInput("")
+      setContentInput("")
+      handleDisplayTodoAddForm("close")
+      getTodos(userToken!)
+        .then((result) => {
+          setTodos(result.data)
+        })
+        .catch((error) => alert(error.message))
+    },
+    onError: (error: AxiosError) => {
+      window.alert(error.message)
+    },
+  })
 
   function handleAddTodo(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -47,7 +44,18 @@ function AddForm({ handleDisplayTodoAddForm, setTodos }: Props) {
       content: contentInput,
     }
 
-    createTodoReq.mutate(data)
+    createTodo(data, userToken!).then((result) => {
+      if (result.data) {
+        setTitleInput("")
+        setContentInput("")
+        handleDisplayTodoAddForm("close")
+        getTodos(userToken!)
+          .then((result) => {
+            setTodos(result.data)
+          })
+          .catch((error) => alert(error.message))
+      }
+    })
   }
 
   return (

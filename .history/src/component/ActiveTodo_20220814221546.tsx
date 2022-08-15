@@ -6,7 +6,7 @@ import {
   MdOutlineEditOff,
   MdPlaylistAddCheck,
 } from "react-icons/md"
-import { useMutation, useQuery } from "react-query"
+import { useMutation } from "react-query"
 import { AllTodoData, DisplayForm } from "../page/Main"
 import {
   getTodos,
@@ -37,34 +37,16 @@ function ActiveTodo({
   const [editedContentInput, setEditedContentInput] = useState("")
   const userToken = window.localStorage.getItem("userToken")
 
-  const getTodoByIdReq = useMutation(
-    "getTodoById",
-    () => getTodoById(activeTodoId, userToken!),
-    {
-      onSuccess: (result) => {
-        setEditedTitleInput(result.data.data.title)
-        setEditedContentInput(result.data.data.content)
-      },
-      onError: (error: AxiosError) => {
-        console.error(error.message)
-      },
-    }
-  )
-
   useEffect(() => {
     if (activeTodoId !== "") {
-      getTodoByIdReq.mutate()
+      getTodoById(activeTodoId, userToken!)
+        .then((result) => {
+          setEditedTitleInput(result.data.title)
+          setEditedContentInput(result.data.content)
+        })
+        .catch((error) => alert(error.message))
     }
   }, [activeTodoId, userToken])
-
-  const getTodosReq = useQuery("getTodos", () => getTodos(userToken!), {
-    onSuccess: (result) => {
-      setTodos(result.data.data)
-    },
-    onError: (error: AxiosError) => {
-      console.error(error.message)
-    },
-  })
 
   const updateTodoReq = useMutation(
     (props: { id: string; data: TodoData }) =>
@@ -72,11 +54,16 @@ function ActiveTodo({
     {
       onSuccess: (result) => {
         handleTodoEditForm("close")
-        setActiveTodo(result.data.data)
-        getTodosReq.refetch()
+        console.log(result)
+        // setActiveTodo(result.data)
+        // getTodos(userToken!)
+        //   .then((res) => {
+        //     setTodos(res.data)
+        //   })
+        //   .catch((error) => alert(error.message))
       },
       onError: (error: AxiosError) => {
-        console.error(error.message)
+        window.alert(error.message)
       },
     }
   )
@@ -88,23 +75,17 @@ function ActiveTodo({
     }
 
     updateTodoReq.mutate({ id, data })
-  }
 
-  const deleteTodoReq = useMutation(
-    (id: string) => deleteTodo(id, userToken!),
-    {
-      onSuccess: (result) => {
-        if (result.data.data === null) {
-          getTodosReq.refetch()
-          setActiveTodoId("")
-          setActiveTodo(undefined)
-        }
-      },
-      onError: (error: AxiosError) => {
-        console.error(error.message)
-      },
-    }
-  )
+    // updateTodo(id, userToken!, data).then((result) => {
+    //   handleTodoEditForm("close")
+    //   setActiveTodo(result.data)
+    //   getTodos(userToken!)
+    //     .then((res) => {
+    //       setTodos(res.data)
+    //     })
+    //     .catch((error) => alert(error.message))
+    // })
+  }
 
   function handleDeleteTodo(id: string) {
     const confirm = window.confirm(
@@ -112,7 +93,15 @@ function ActiveTodo({
     )
 
     if (confirm) {
-      deleteTodoReq.mutate(id)
+      deleteTodo(id, userToken!).then((result) => {
+        if (result.data === null) {
+          getTodos(userToken!).then((res) => {
+            setTodos(res.data)
+          })
+          setActiveTodoId("")
+          setActiveTodo(undefined)
+        }
+      })
     }
   }
 

@@ -29,7 +29,7 @@ function AddForm({ handleDisplayTodoAddForm, setTodos }: Props) {
         handleDisplayTodoAddForm("close")
         getTodos(userToken!)
           .then((result) => {
-            setTodos(result.data.data)
+            setTodos(result.data)
           })
           .catch((error) => alert(error.message))
       },
@@ -48,6 +48,18 @@ function AddForm({ handleDisplayTodoAddForm, setTodos }: Props) {
     }
 
     createTodoReq.mutate(data)
+    // createTodo(data, userToken!).then((result) => {
+    //   if (result.data) {
+    //     setTitleInput("")
+    //     setContentInput("")
+    //     handleDisplayTodoAddForm("close")
+    //     getTodos(userToken!)
+    //       .then((result) => {
+    //         setTodos(result.data)
+    //       })
+    //       .catch((error) => alert(error.message))
+    //   }
+    // })
   }
 
   return (

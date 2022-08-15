@@ -37,23 +37,14 @@ function ActiveTodo({
   const [editedContentInput, setEditedContentInput] = useState("")
   const userToken = window.localStorage.getItem("userToken")
 
-  const getTodoByIdReq = useMutation(
-    "getTodoById",
-    () => getTodoById(activeTodoId, userToken!),
-    {
-      onSuccess: (result) => {
-        setEditedTitleInput(result.data.data.title)
-        setEditedContentInput(result.data.data.content)
-      },
-      onError: (error: AxiosError) => {
-        console.error(error.message)
-      },
-    }
-  )
-
   useEffect(() => {
     if (activeTodoId !== "") {
-      getTodoByIdReq.mutate()
+      getTodoById(activeTodoId, userToken!)
+        .then((result) => {
+          setEditedTitleInput(result.data.title)
+          setEditedContentInput(result.data.content)
+        })
+        .catch((error) => alert(error.message))
     }
   }, [activeTodoId, userToken])
 

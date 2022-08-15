@@ -44,7 +44,7 @@ function Auth() {
       }
     },
     onError: (error: AxiosError) => {
-      console.error(error.message)
+      window.alert(error.message)
     },
   })
 

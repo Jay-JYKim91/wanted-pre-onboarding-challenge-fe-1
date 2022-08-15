@@ -5,7 +5,6 @@ import Main from "./page/Main"
 import { getTodos } from "./services/todoAPI"
 import { IoLogOut } from "react-icons/io5"
 import { useQuery } from "react-query"
-import { AxiosError } from "axios"
 
 function App() {
   const navigate = useNavigate()
@@ -14,10 +13,7 @@ function App() {
 
   const getTodosReq = useQuery("getTodos", () => getTodos(userToken!), {
     onSuccess: (result) => {
-      setTodos(result.data.data)
-    },
-    onError: (error: AxiosError) => {
-      console.error(error.message)
+      console.log(result)
     },
   })
 
@@ -27,6 +23,10 @@ function App() {
       navigate("/auth")
     } else {
       getTodosReq.refetch()
+
+      // getTodos(userToken!).then((result) => {
+      //   setTodos(result.data)
+      // })
     }
   }, [userToken])
 
